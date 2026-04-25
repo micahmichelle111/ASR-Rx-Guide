@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ASD-Rx Guide</title>
+<style>
+:root{
+  --bg:#f7f9fc;
+  --ink:#16213e;
+  --muted:#5f6c7b;
+  --white:#ffffff;
+  --line:#d8e1ec;
+  --plum:#5b2a86;
+  --teal:#0f766e;
+  --blue:#2563eb;
+  --green:#15803d;
+  --orange:#ea580c;
+  --rose:#be123c;
+  --purple-soft:#f3e8ff;
+  --teal-soft:#ccfbf1;
+  --blue-soft:#dbeafe;
+  --green-soft:#dcfce7;
+  --orange-soft:#ffedd5;
+  --rose-soft:#ffe4e6;
+  --shadow:0 8px 24px rgba(15,23,42,.08);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,#f7f9fc 0%,#eef7ff 50%,#f8f0ff 100%);color:var(--ink)}
+.app{max-width:1180px;margin:auto;padding:18px}
+.hero{
+  background:linear-gradient(135deg,var(--plum),#2563eb 55%,var(--teal));
+  color:white;border-radius:28px;padding:28px;box-shadow:var(--shadow);margin-bottom:16px
+}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1;margin:.2rem 0}
+.hero p{font-size:1.05rem;max-width:820px;line-height:1.55}
+.notice{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);border-radius:18px;padding:12px;margin-top:12px}
+.nav,.actions,.chips,.row,.bottom{display:flex;gap:10px;flex-wrap:wrap}
+.nav{position:sticky;top:0;z-index:5;background:rgba(247,249,252,.92);backdrop-filter:blur(10px);padding:10px 0;margin-bottom:16px}
+button,.btn{
+  border:0;border-radius:999px;padding:11px 16px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center
+}
+.nav button{background:white;color:var(--ink);border:1px solid var(--line)}
+.nav button.active{background:var(--plum);color:white}
+.hero .btn{background:white;color:var(--plum)}
+.hero .btn.secondary{background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.35)}
+.page{display:none}
+.page.active{display:block}
+.card{background:white;border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.grid{display:grid;gap:16px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+h2{margin:0 0 10px;color:var(--ink)}
+h3{margin:0 0 8px}
+p,li{line-height:1.55}
+.muted{color:var(--muted)}
+.field label{font-weight:800;display:block;margin-bottom:6px}
+input,select,textarea{width:100%;padding:12px;border-radius:14px;border:1px solid var(--line);font:inherit}
+textarea{min-height:120px}
+.scale{border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:10px;background:#fbfdff}
+.scale p{margin:.1rem 0 .7rem;font-weight:700}
+.scale .row button{background:white;border:1px solid var(--line);color:var(--ink);min-width:46px}
+.scale .row button.selected{background:var(--plum);color:white}
+.score{display:inline-flex;background:var(--purple-soft);color:var(--plum);border-radius:999px;padding:8px 12px;font-weight:900}
+.progress{height:12px;background:white;border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.4);margin-top:8px}
+.progress div{height:100%;width:0;background:#facc15}
+.symptom-btn{border-radius:22px;padding:16px;text-align:left;color:white;box-shadow:var(--shadow)}
+.symptom-btn h3{color:white}
+.symptom-btn p{margin:.2rem 0 0;color:rgba(255,255,255,.9)}
+.symptom-btn.adhd{background:linear-gradient(135deg,#2563eb,#06b6d4)}
+.symptom-btn.anxiety{background:linear-gradient(135deg,#7c3aed,#c026d3)}
+.symptom-btn.language{background:linear-gradient(135deg,#15803d,#22c55e)}
+.symptom-btn.irritability{background:linear-gradient(135deg,#ea580c,#f59e0b)}
+.symptom-btn.aggression{background:linear-gradient(135deg,#be123c,#ef4444)}
+.pill{display:inline-flex;border-radius:999px;padding:6px 10px;font-size:.88rem;font-weight:800;background:#eef2ff;color:#3730a3;margin:3px}
+.support{border-radius:22px;padding:18px;border:1px solid var(--line)}
+.support.adhd{background:var(--blue-soft)}
+.support.anxiety{background:var(--purple-soft)}
+.support.language{background:var(--green-soft)}
+.support.irritability{background:var(--orange-soft)}
+.support.aggression{background:var(--rose-soft)}
+.med-card{border-radius:22px;padding:16px;border:1px solid var(--line);background:white}
+.med-card.offlabel{border-top:8px solid var(--orange);background:#fffaf5}
+.med-card.label{border-top:8px solid var(--blue);background:#f8fbff}
+.badge{font-size:.82rem;font-weight:900;border-radius:999px;padding:5px 9px;display:inline-flex;margin-bottom:8px}
+.badge.offlabel{background:var(--orange-soft);color:#9a3412}
+.badge.label{background:var(--blue-soft);color:#1d4ed8}
+.tree button{border-radius:16px;background:white;border:1px solid var(--line);color:var(--ink);text-align:left}
+.output{border-radius:18px;padding:14px;background:white;border:1px solid var(--line);margin-top:10px}
+.snippet{white-space:pre-wrap;background:#0f172a;color:#e2e8f0;border-radius:18px;padding:16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.bottom{justify-content:space-between;margin-top:14px}
+.bottom button{background:var(--plum);color:white}
+.bottom button.back{background:white;color:var(--ink);border:1px solid var(--line)}
+.case-option{background:white;border:1px solid var(--line);color:var(--ink);border-radius:16px}
+.case-option.selected{background:var(--teal);color:white}
+.good{background:var(--green-soft);border:1px solid #86efac;border-radius:16px;padding:12px;margin-top:10px}
+.warn{background:var(--rose-soft);border:1px solid #fecdd3;border-radius:16px;padding:12px;margin-top:10px}
+@media(max-width:850px){.grid.two,.grid.three,.grid.four{grid-template-columns:1fr}.nav{position:static}.bottom{justify-content:flex-start}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="hero">
+    <div class="muted" style="color:rgba(255,255,255,.82);font-weight:800">ASD-Rx Guide</div>
+    <h1>Symptom-targeted prescribing support for children with ASD</h1>
+    <p>Select the primary symptom cluster, review age and starting-dose guidance, then complete the post-test after using the guide.</p>
+    <div class="actions">
+      <button class="btn" onclick="go('pretest')">Start Pre-Test</button>
+      <button class="btn secondary" onclick="go('guide')">Open Guide</button>
+      <button class="btn secondary" onclick="go('posttest')">Post-Test</button>
+    </div>
+    <div class="notice">Educational tool only. Age and starting-dose guidance is educational; verify current label, patient weight, formulation, comorbidities, and local policy before prescribing.</div>
+    <div class="progress"><div id="progress"></div></div>
+  </section>
+
+  <nav class="nav">
+    <button id="tab-home" onclick="go('home')" class="active">Home</button>
+    <button id="tab-pretest" onclick="go('pretest')">Pre-Test</button>
+    <button id="tab-guide" onclick="go('guide')">Guide</button>
+    <button id="tab-documentation" onclick="go('documentation')">Documentation</button>
+    <button id="tab-posttest" onclick="go('posttest')">Post-Test</button>
+    <button id="tab-cases" onclick="go('cases')">Optional Cases</button>
+    <button id="tab-feedback" onclick="go('feedback')">Feedback</button>
+  </nav>
+
+  <section id="home" class="page active">
+    <div class="grid four">
+      <div class="card"><h3>1. Pre-Test</h3><p>Baseline provider confidence.</p></div>
+      <div class="card"><h3>2. Guide</h3><p>Colorful symptom selector and medication cards.</p></div>
+      <div class="card"><h3>3. Documentation</h3><p>Copy-ready counseling note.</p></div>
+      <div class="card"><h3>4. Post-Test</h3><p>Before/after confidence comparison.</p></div>
+    </div>
+    <div class="bottom"><span></span><button onclick="go('pretest')">Next: Pre-Test →</button></div>
+  </section>
+
+  <section id="pretest" class="page">
+    <div class="card">
+      <h2>Provider demographics</h2>
+      <div class="grid two">
+        <div class="field"><label>Provider type</label><select id="providerType"><option value="">Select</option><option>Family Practice</option><option>Pediatrics</option><option>Acute Care</option><option>Psychiatry</option><option>Other</option></select></div>
+        <div class="field"><label>Years in position</label><input id="yearsPosition" type="number"></div>
+        <div class="field"><label>Practice setting</label><input id="practiceSetting" placeholder="Primary care, specialty, telehealth"></div>
+        <div class="field"><label>Practice location</label><input id="practiceLocation"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Pre-Test Confidence</h2>
+      <p class="muted">1 = Not confident | 5 = Highly confident</p>
+      <div id="preWrap"></div>
+      <p><span class="score" id="preScore">0.00 / 5</span></p>
+    </div>
+    <div class="bottom"><button class="back" onclick="go('home')">← Back</button><button onclick="go('guide')">Next: Guide →</button></div>
+  </section>
+
+  <section id="guide" class="page">
+    <div class="card">
+      <h2>Select the Primary Symptom Cluster</h2>
+      <p class="muted">Click a colorful card. The guide, medication cards, documentation, and cases update automatically.</p>
+      <div class="grid three" id="symptomGrid"></div>
+    </div>
+    <div id="supportBox" class="support adhd"></div>
+    <div class="card" id="treeCard">
+      <h2>ADHD If/Then Decision Support</h2>
+      <div class="tree" id="treeButtons"></div>
+      <div class="output" id="treeOutput"></div>
+    </div>
+    <div class="card">
+      <h2>Medication Cards</h2>
+      <p class="muted">Off-label ASD-relevant options appear first. Cards include age and starting dosing.</p>
+      <div class="grid two" id="medCards"></div>
+    </div>
+    <div class="bottom"><button class="back" onclick="go('pretest')">← Back</button><button onclick="go('documentation')">Next: Documentation →</button></div>
+  </section>
+
+  <section id="documentation" class="page">
+    <div class="card">
+      <h2 id="docTitle">Documentation</h2>
+      <p class="muted">Copy into your clinical note and edit for the patient context.</p>
+      <div class="snippet" id="docText"></div>
+      <p><button onclick="copyDoc()" class="btn primary" id="copyBtn">Copy Documentation</button></p>
+    </div>
+    <div class="bottom"><button class="back" onclick="go('guide')">← Back</button><button onclick="go('posttest')">Next: Post-Test →</button></div>
+  </section>
+
+  <section id="posttest" class="page">
+    <div class="card">
+      <h2>Post-Test Confidence</h2>
+      <p class="muted">Complete after using the guide. Same items as pre-test.</p>
+      <div id="postWrap"></div>
+      <p><span class="score" id="postScore">0.00 / 5</span> <span class="score" id="diffScore">Change: 0.00</span></p>
+    </div>
+    <div class="bottom"><button class="back" onclick="go('documentation')">← Back</button><button onclick="go('cases')">Next: Optional Cases →</button></div>
+  </section>
+
+  <section id="cases" class="page">
+    <div class="card">
+      <h2>Optional Case Questions</h2>
+      <div id="casesWrap"></div>
+    </div>
+    <div class="bottom"><button class="back" onclick="go('posttest')">← Back</button><button onclick="go('feedback')">Next: Feedback →</button></div>
+  </section>
+
+  <section id="feedback" class="page">
+    <div class="card">
+      <h2>Final Feedback</h2>
+      <div id="feedbackWrap"></div>
+      <div class="field"><label>What was most helpful?</label><textarea id="freeText"></textarea></div>
+    </div>
+    <div class="bottom"><button class="back" onclick="go('cases')">← Back</button><button onclick="go('home')">Return Home ↑</button></div>
+  </section>
+</div>
+
+<script>
+const pages=["home","pretest","guide","documentation","posttest","cases","feedback"];
+const questions=[
+"Formulating a clinical question related to ASD care",
+"Searching for relevant clinical evidence",
+"Critically appraising research evidence",
+"Applying evidence to clinical decision-making",
+"Identifying symptom clusters in children with ASD",
+"Selecting medications based on symptoms rather than diagnosis alone",
+"Choosing appropriate first-line pharmacologic options for irritability/aggression",
+"Choosing appropriate treatment for ADHD symptoms in children with ASD",
+"Selecting treatment options for anxiety or repetitive behaviors in ASD",
+"Understanding when off-label medications are appropriate in ASD",
+"Monitoring medication response and side effects",
+"Counseling families about medication risks and benefits",
+"Using a prescribing guide within workflow",
+"Overall confidence prescribing medications for children with ASD"
+];
+let selected="adhd";
+let pre=Array(questions.length).fill(0);
+let post=Array(questions.length).fill(0);
+let feedback={};
+
+const pathways={
+adhd:{class:"adhd",title:"ADHD / Hyperactivity / Impulsivity",small:"Inattention, hyperactivity, impulsivity",observed:"Inattention, hyperactivity, impulsivity, distractibility, poor task completion, emotional reactivity with redirection",goals:"Improve home/school function and reduce impulsivity while clarifying whether dysregulation, anxiety, or sleep is the true driver.",focus:"Guanfacine is emphasized for ASD-related hyperactivity/impulsivity/emotional dysregulation. Stimulants are included only when symptoms are clearly ADHD-like.",escalate:"Escalate or reassess if stimulants worsen irritability, sleep, appetite, or emotional lability."},
+anxiety:{class:"anxiety",title:"Anxiety / Repetitive Behaviors",small:"Rigidity, worry, repetitive distress",observed:"Worry, rigidity, distress with transitions, reassurance seeking, repetitive distress",goals:"Reduce anxiety and rigidity while distinguishing anxiety-driven distress from irritability or impulsivity.",focus:"Fluoxetine may be considered off-label when anxiety/rigidity is the clear treatment target.",escalate:"Escalate if activation emerges, diagnosis is unclear, or behavior worsens."},
+language:{class:"language",title:"Language / Communication",small:"Communication-related select cases",observed:"Language delay, communication limitations, select developmental presentations",goals:"Support communication-related function in select cases while avoiding broad ASD-treatment claims.",focus:"Leucovorin/folinic acid is framed as select-case, off-label communication/language support.",escalate:"Escalate for unclear fit, complexity, or lack of developmental context."},
+irritability:{class:"irritability",title:"Irritability",small:"Outbursts, dysregulation",observed:"Frustration, frequent outbursts, transition dysregulation, emotional reactivity",goals:"Clarify whether irritability is driven by impulsivity, anxiety, sleep, or severe aggression.",focus:"Guanfacine may fit ASD-related dysregulation/impulsivity. Avoid jumping to antipsychotics unless severity warrants.",escalate:"Escalate if severity rises, self-injury appears, or safety concerns emerge."},
+aggression:{class:"aggression",title:"Severe Aggression",small:"Safety risk, self-injury",observed:"Unsafe behavior, self-injury, harm to others, escalating aggression",goals:"Prioritize safety and determine whether labeled pediatric autism irritability options are justified.",focus:"Risperidone and aripiprazole are kept as labeled pediatric autism irritability options for severe cases.",escalate:"Escalate immediately for self-injury, severe aggression, or diagnostic uncertainty."}
+};
+
+const meds={
+adhd:[
+{type:"offlabel",name:"Guanfacine ER",label:"Off-label in ASD; pediatric ADHD age/dose anchor",age:"ASD use: off-label for ASD-related hyperactivity, impulsivity, distractibility, and emotional dysregulation. Pediatric ADHD label anchor: ages 6–17.",start:"Ages 6–17: start 1 mg once daily in the morning or evening.",titration:"Increase by no more than 1 mg/week.",monitor:"BP, HR, sedation/somnolence, dizziness, home/school functioning.",caution:"Do not substitute ER and IR mg-for-mg. ASD use is off-label."},
+{type:"offlabel",name:"Guanfacine IR",label:"Off-label in ASD; clinician-guided",age:"ASD use: off-label clinician-guided option for ASD-related hyperactivity, impulsivity, and dysregulation when divided dosing is desired. No ASD-specific FDA age indication.",start:"Common pediatric off-label start: 0.5 mg at bedtime.",titration:"Add morning dose after 4–7 days if needed; adjust in 0.5 mg increments.",monitor:"BP, HR, sedation, dizziness, fatigue.",caution:"Use local protocol. Taper rather than stop abruptly. IR and ER are not interchangeable."},
+{type:"label",name:"Methylphenidate IR",label:"Standard ADHD treatment; use cautiously in ASD",age:"Pediatric ADHD label anchor: ages 6 years and older. ASD use is symptom-driven when ADHD-like symptoms are clear.",start:"Ages 6 and older: start 5 mg twice daily before breakfast and lunch.",titration:"Increase gradually in 5–10 mg weekly increments.",monitor:"Appetite, sleep, irritability, lability, weight/growth, BP/HR.",caution:"If irritability/aggression worsens, reassess stimulant pathway."}
+],
+anxiety:[
+{type:"offlabel",name:"Fluoxetine",label:"Off-label in ASD; pediatric label-based anchor",age:"ASD use: off-label for anxiety/rigidity/repetitive distress. Pediatric label anchors exist for depression/OCD.",start:"Start low: 5–10 mg daily; label-based initiation often uses 10 mg/day depending on indication/weight.",titration:"Increase gradually; 10 mg to 20 mg after 1–2 weeks may be appropriate if tolerated.",monitor:"Activation, GI effects, sleep change, behavioral activation.",caution:"Start low because ASD response is heterogeneous."}
+],
+language:[
+{type:"offlabel",name:"Leucovorin / Folinic Acid",label:"Off-label/select-case in ASD",age:"Select-case pediatric communication/language pathway. No universal ASD age-based indication.",start:"Educational simple start: 5 mg daily OR clinician-directed weight-based plan.",titration:"Titrate per supervising clinician/local protocol.",monitor:"Tolerability, language/communication response, functional change.",caution:"Not a universal ASD treatment."}
+],
+irritability:[
+{type:"offlabel",name:"Guanfacine ER",label:"Off-label in ASD; pediatric ADHD age/dose anchor",age:"ASD use: off-label for irritability when impulsivity/hyperarousal/emotional dysregulation is the driver. ADHD label anchor: ages 6–17.",start:"Ages 6–17: start 1 mg once daily.",titration:"Increase by no more than 1 mg/week.",monitor:"BP, HR, sedation, dizziness, outburst frequency/severity.",caution:"Not a substitute for safety assessment in severe aggression."},
+{type:"offlabel",name:"Guanfacine IR",label:"Off-label in ASD; clinician-guided",age:"Off-label clinician-guided option for dysregulation/impulsivity-related irritability.",start:"Common pediatric off-label start: 0.5 mg at bedtime.",titration:"Add morning dose after 4–7 days if needed and tolerated.",monitor:"BP, HR, sedation, fatigue, dizziness.",caution:"Taper rather than stop abruptly. IR/ER are not mg-for-mg interchangeable."}
+],
+aggression:[
+{type:"label",name:"Risperidone",label:"FDA-labeled pediatric autism irritability option",age:"FDA-labeled for irritability associated with autistic disorder in pediatric patients; dosing is weight-based.",start:"<20 kg: start 0.25 mg/day. ≥20 kg: start 0.5 mg/day.",titration:"After at least 4 days, increase to 0.5 mg/day if <20 kg or 1 mg/day if ≥20 kg; further increases no more often than every 2 weeks.",monitor:"Weight/BMI, metabolic labs/risk, sedation, EPS, behavioral response.",caution:"Reserve for higher-severity presentations."},
+{type:"label",name:"Aripiprazole",label:"FDA-labeled pediatric autism irritability option",age:"FDA-labeled for irritability associated with autistic disorder in pediatric patients ages 6–17.",start:"Ages 6–17: start 2 mg/day.",titration:"Increase to 5 mg/day, then 10–15 mg/day if needed; 5 mg increments no more often than weekly.",monitor:"Weight/BMI, sedation/activation, akathisia/restlessness, metabolic risk.",caution:"Use only when severity and impairment justify risk burden."}
+]
+};
+
+const tree=[
+["If ADHD symptoms are clear and irritability is not dominant","Then stimulant education can be reviewed. Start low, titrate slowly, and monitor appetite, sleep, irritability, weight, and function."],
+["If emotional dysregulation is prominent","Then consider guanfacine first rather than stimulant-first logic."],
+["If anxiety or rigidity is prominent","Then avoid stimulant-first logic and reassess whether anxiety/rigidity is the driver."],
+["If stimulant is started and behavior worsens","Then stop and reassess the original symptom formulation."]
+];
+
+const docs={
+adhd:"Discussed symptom-targeted treatment options for ADHD-like symptoms in the setting of ASD. Reviewed whether symptoms were clearly ADHD-like versus primarily anxiety- or dysregulation-driven. Discussed risks, benefits, alternatives, and monitoring plan with caregiver, including appetite, sleep, irritability, and cardiovascular monitoring if stimulant pathway is used. Caregiver verbalized understanding and agreement with plan.",
+anxiety:"Discussed anxiety- and rigidity-targeted treatment options in the setting of ASD. Reviewed risks, benefits, alternatives, slow titration, and close follow-up. Discussed activation risk, sleep changes, GI effects, and expected timeline. Caregiver verbalized understanding and agreement with plan.",
+language:"Discussed select-case communication/language-support medication considerations in the setting of ASD. Reviewed that this pathway is not a universal ASD treatment and should be used only in an appropriate developmental context. Caregiver verbalized understanding and agreement with plan.",
+irritability:"Discussed symptom-targeted treatment options for irritability in the setting of ASD. Reviewed likely drivers including impulsivity, anxiety, sleep, and dysregulation. Reviewed risks, benefits, alternatives, and monitoring plan. Caregiver verbalized understanding and agreement with plan.",
+aggression:"Discussed higher-severity treatment options for aggression/unsafe behavior in the setting of ASD. Reviewed safety concerns, risks, benefits, alternatives, and monitoring plan, including metabolic and sedation monitoring when indicated. Reviewed return precautions and escalation plan."
+};
+
+const cases=[
+{title:"Case 1: School disruption and impulsivity",scenario:"An 8-year-old with ASD is interrupting constantly, cannot remain seated, and becomes dysregulated when redirected.",q:"Which pathway best fits?",opts:["Immediate antipsychotic","Guanfacine-focused approach","Treat core autism directly","No follow-up"],a:1,r:"Hyperactivity/impulsivity plus dysregulation fits guanfacine-focused support."},
+{title:"Case 2: Anxiety and rigidity",scenario:"A 12-year-old with ASD has escalating rigidity, worry, and repetitive reassurance-seeking.",q:"Best pharmacologic frame?",opts:["SSRI/anxiety pathway","Default antipsychotic","Ignore concerns","Treat sleep only"],a:0,r:"Anxiety and rigidity are the main targets."},
+{title:"Case 3: Severe aggression",scenario:"A 10-year-old with ASD presents with severe aggression and self-injury.",q:"Most important first principle?",opts:["Treat all ASD same","Safety assessment and higher-severity pathway","Use leucovorin first","Delay action"],a:1,r:"Severe aggression requires safety framing."}
+];
+let caseAnswers=Array(cases.length).fill(null);
+
+function go(id){
+ pages.forEach(p=>document.getElementById(p).classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ pages.forEach(p=>document.getElementById("tab-"+p).classList.remove("active"));
+ document.getElementById("tab-"+id).classList.add("active");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderScales(target, arr, scoreId){
+ const wrap=document.getElementById(target); wrap.innerHTML="";
+ questions.forEach((q,i)=>{
+  const div=document.createElement("div"); div.className="scale";
+  div.innerHTML="<p>"+(i+1)+". "+q+"</p>";
+  const row=document.createElement("div"); row.className="row";
+  [1,2,3,4,5].forEach(n=>{
+   const b=document.createElement("button"); b.textContent=n;
+   b.className=arr[i]===n?"selected":"";
+   b.onclick=()=>{arr[i]=n; renderScales(target,arr,scoreId); updateScores();};
+   row.appendChild(b);
+  });
+  div.appendChild(row); wrap.appendChild(div);
+ });
+ updateScores();
+}
+
+function avg(arr){const vals=arr.filter(Boolean); return vals.length? vals.reduce((a,b)=>a+b,0)/vals.length:0;}
+function updateScores(){
+ document.getElementById("preScore").textContent=avg(pre).toFixed(2)+" / 5";
+ document.getElementById("postScore").textContent=avg(post).toFixed(2)+" / 5";
+ document.getElementById("diffScore").textContent="Change: "+(avg(post)-avg(pre)).toFixed(2);
+ const demo=["providerType","yearsPosition","practiceSetting","practiceLocation"].filter(id=>document.getElementById(id).value).length;
+ const done=[demo===4,pre.some(Boolean),post.some(Boolean),Object.keys(feedback).length>0].filter(Boolean).length;
+ document.getElementById("progress").style.width=(done*25)+"%";
+}
+
+function renderSymptoms(){
+ const grid=document.getElementById("symptomGrid"); grid.innerHTML="";
+ Object.keys(pathways).forEach(k=>{
+  const p=pathways[k]; const b=document.createElement("button");
+  b.className="symptom-btn "+p.class; b.innerHTML="<h3>"+p.title+"</h3><p>"+p.small+"</p>";
+  b.onclick=()=>{selected=k; renderGuide();};
+  grid.appendChild(b);
+ });
+}
+
+function renderGuide(){
+ const p=pathways[selected];
+ const box=document.getElementById("supportBox"); box.className="support "+p.class;
+ box.innerHTML="<h2>"+p.title+"</h2><p><strong>What you may observe:</strong> "+p.observed+"</p><p><strong>Clinical goals:</strong> "+p.goals+"</p><p><strong>Medication support:</strong> "+p.focus+"</p><p><strong>Escalate/reassess:</strong> "+p.escalate+"</p>";
+ const medWrap=document.getElementById("medCards"); medWrap.innerHTML="";
+ meds[selected].forEach(m=>{
+  const d=document.createElement("div"); d.className="med-card "+m.type;
+  d.innerHTML="<span class='badge "+m.type+"'>"+m.label+"</span><h3>"+m.name+"</h3><p><strong>Age support:</strong> "+m.age+"</p><p><strong>Starting dose:</strong> "+m.start+"</p><p><strong>Titration:</strong> "+m.titration+"</p><p><strong>Monitoring:</strong> "+m.monitor+"</p><p><strong>Caution:</strong> "+m.caution+"</p>";
+  medWrap.appendChild(d);
+ });
+ const treeCard=document.getElementById("treeCard");
+ if(selected==="adhd"){
+  treeCard.style.display="block";
+  const tb=document.getElementById("treeButtons"); tb.innerHTML="";
+  tree.forEach((t,i)=>{
+   const b=document.createElement("button"); b.textContent=t[0]; b.onclick=()=>document.getElementById("treeOutput").textContent=t[1];
+   tb.appendChild(b);
+   if(i===0) document.getElementById("treeOutput").textContent=t[1];
+  });
+ } else {treeCard.style.display="none";}
+ document.getElementById("docTitle").textContent=p.title+" Documentation";
+ document.getElementById("docText").textContent=docs[selected];
+}
+
+function copyDoc(){
+ navigator.clipboard.writeText(document.getElementById("docText").textContent).then(()=>{
+  const btn=document.getElementById("copyBtn"); btn.textContent="Copied"; setTimeout(()=>btn.textContent="Copy Documentation",1200);
+ });
+}
+
+function renderCases(){
+ const wrap=document.getElementById("casesWrap"); wrap.innerHTML="";
+ cases.forEach((c,i)=>{
+  const div=document.createElement("div"); div.className="scale";
+  div.innerHTML="<h3>"+c.title+"</h3><p>"+c.scenario+"</p><p><strong>"+c.q+"</strong></p>";
+  const row=document.createElement("div"); row.className="row";
+  c.opts.forEach((o,j)=>{
+   const b=document.createElement("button"); b.className="case-option "+(caseAnswers[i]===j?"selected":""); b.textContent=String.fromCharCode(65+j)+". "+o;
+   b.onclick=()=>{caseAnswers[i]=j; renderCases();};
+   row.appendChild(b);
+  });
+  div.appendChild(row);
+  if(caseAnswers[i]!==null){const r=document.createElement("div"); r.className=caseAnswers[i]===c.a?"good":"warn"; r.innerHTML="<strong>Rationale:</strong> "+c.r; div.appendChild(r);}
+  wrap.appendChild(div);
+ });
+}
+
+function renderFeedback(){
+ const wrap=document.getElementById("feedbackWrap"); wrap.innerHTML="";
+ ["The guide improved my confidence","I feel more comfortable prescribing after using the guide","I would use this tool in practice"].forEach((q,i)=>{
+  const div=document.createElement("div"); div.className="scale"; div.innerHTML="<p>"+q+"</p>";
+  const row=document.createElement("div"); row.className="row";
+  ["Strongly disagree","Disagree","Neutral","Agree","Strongly agree"].forEach(opt=>{
+   const b=document.createElement("button"); b.textContent=opt; b.className=feedback[i]===opt?"selected":"";
+   b.onclick=()=>{feedback[i]=opt; renderFeedback(); updateScores();};
+   row.appendChild(b);
+  });
+  div.appendChild(row); wrap.appendChild(div);
+ });
+}
+["providerType","yearsPosition","practiceSetting","practiceLocation"].forEach(id=>document.getElementById(id).addEventListener("input",updateScores));
+renderScales("preWrap",pre,"preScore");
+renderScales("postWrap",post,"postScore");
+renderSymptoms();
+renderGuide();
+renderCases();
+renderFeedback();
+updateScores();
+</script>
+</body>
+</html>
